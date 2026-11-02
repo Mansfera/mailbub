@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">"Mailbub"</string>
+    <string name="main_activity_title">"Mailbub"</string>
+    <string name="signing_in">Signing in to your mail</string>
+</resources>

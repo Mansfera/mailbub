@@ -1,0 +1,29 @@
+{
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "android",
+  "description": "The Android back button, and sign-in pages in a Custom Tab",
+  "platforms": [
+    "android"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:app:allow-register-listener",
+    "core:app:allow-remove-listener",
+    "core:app:allow-exit",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://accounts.google.com/*",
+          "app": "inAppBrowser"
+        },
+        {
+          "url": "https://login.microsoftonline.com/*",
+          "app": "inAppBrowser"
+        }
+      ]
+    }
+  ]
+}

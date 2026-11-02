@@ -1,0 +1,4 @@
+# `cargo run` (used by `bun tauri dev`) and `cargo test` go through this script, which signs
+# the fresh binary with the local identity so Keychain "Always Allow" survives rebuilds.
+[target.'cfg(target_os = "macos")']
+runner = "scripts/sign-and-run.sh"

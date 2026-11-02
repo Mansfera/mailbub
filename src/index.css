@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+/*
+ * Tokens, from the palette https://coolors.co/483d3f-058ed9-f4ebd9-a39a92-77685d
+ * (charcoal, sky blue, cream, warm gray, taupe). Choices and why:
+ * - Type: the system font (SF Pro on macOS) because the brief asks for a native feel.
+ * - Light: cream paper, charcoal ink. The reading pane lifts the cream so bubbles in the
+ *   palette cream still stand out from it.
+ * - Dark: the same warm hue, not a neutral gray. Charcoal is the bubble, and the panes step
+ *   down from it along its own hue; cream is the text.
+ * - Blue: --brand is the palette blue, for marks with no text on them (focus, toggles, tints).
+ *   White on it is only 3.6:1, so --accent is the same hue deepened to 4.8:1 for anything
+ *   carrying text, like outgoing bubbles and buttons.
+ * - Palette gray and taupe are text colours where they reach contrast. Gray is 2.6:1 on
+ *   cream, so light mode's faintest text is a darker step of it.
+ * - Account colours are categorical and sit outside the palette, or two accounts would
+ *   look alike; slate is retoned to taupe to stay warm.
+ * - Sidebar is tinted over macOS vibrancy inside Tauri (see below); the conversation pane is
+ *   opaque for reading.
+ */
+:root {
+  --bg: #fbf7ee;
+  --sidebar: #f4ebd9;
+  --sidebar-line: rgb(72 61 63 / 0.09);
+  --surface: #f4ebd9;
+  --avatar: rgb(119 104 93 / 0.18);
+  --raised: #fffdf8;
+  --text: #483d3f;
+  --text-2: #77685d;
+  --text-3: #8a7d72;
+  --line: rgb(72 61 63 / 0.11);
+  --hover: rgb(72 61 63 / 0.055);
+  --selected: #e3eef3;
+  --brand: #058ed9;
+  --accent: #0478b8;
+  --accent-hover: #03689f;
+  --on-accent: #ffffff;
+  --accent-text: #0467a0;
+  --done: #2b7445;
+  --account-red: #c9402f;
+  --account-teal: #12857a;
+  --account-gold: #b7861b;
+  --account-plum: #a8487f;
+  --account-olive: #6f7d2a;
+  --account-slate: #77685d;
+  --shadow-pop: 0 12px 40px rgb(72 61 63 / 0.22), 0 0 0 1px rgb(72 61 63 / 0.08);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #2b2426;
+  --sidebar: #352d2f;
+  --sidebar-line: rgb(244 235 217 / 0.07);
+  --surface: #483d3f;
+  --avatar: rgb(163 154 146 / 0.2);
+  --raised: #3a3133;
+  --text: #f4ebd9;
+  --text-2: #bdb4ab;
+  --text-3: #a39a92;
+  --line: rgb(244 235 217 / 0.1);
+  --hover: rgb(244 235 217 / 0.065);
+  --selected: rgb(5 142 217 / 0.28);
+  --brand: #058ed9;
+  --accent: #0478b8;
+  --accent-hover: #0680c3;
+  --on-accent: #ffffff;
+  --accent-text: #5bbdf0;
+  --done: #6cc28c;
+  --account-red: #ef6b5e;
+  --account-teal: #3cb5a8;
+  --account-gold: #d9a73c;
+  --account-plum: #d77bb0;
+  --account-olive: #a6b55a;
+  --account-slate: #8a7d72;
+  --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(244 235 217 / 0.08);
+  color-scheme: dark;
+}
+
+/* Inside the Tauri window the native sidebar material shows through, warmed by the palette
+   so it doesn't read as cool gray next to the conversation pane. */
+:root[data-shell="tauri"] {
+  --sidebar: rgb(244 235 217 / 0.72);
+}
+
+:root[data-shell="tauri"][data-theme="dark"] {
+  --sidebar: rgb(53 45 47 / 0.72);
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", sans-serif;
+  --color-bg: var(--bg);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-line: var(--sidebar-line);
+  --color-surface: var(--surface);
+  --color-avatar: var(--avatar);
+  --color-raised: var(--raised);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-line: var(--line);
+  --color-hover: var(--hover);
+  --color-selected: var(--selected);
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+  --color-accent-text: var(--accent-text);
+  --color-done: var(--done);
+  --color-account-red: var(--account-red);
+  --color-account-teal: var(--account-teal);
+  --color-account-gold: var(--account-gold);
+  --color-account-plum: var(--account-plum);
+  --color-account-olive: var(--account-olive);
+  --color-account-slate: var(--account-slate);
+  --shadow-pop: var(--shadow-pop);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  overflow: hidden;
+}
+
+/* The UI is sized for a pointer; on a phone everything is a step larger for fingers. Inside a
+   zoomed box Chromium sizes `fixed` overlays to the zoomed viewport, which overshoots the
+   screen, so they are placed against the root instead. */
+:root[data-platform="android"] #root {
+  zoom: 1.15;
+  position: relative;
+  overflow: hidden;
+}
+
+:root[data-platform="android"] #root .fixed {
+  position: absolute;
+}
+
+/* A long press opens the message menu, which has Copy, rather than selecting a word. */
+:root[data-platform="android"] .selectable:not(input, textarea) {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The window itself is transparent in Tauri; each pane paints its own background. */
+:root[data-shell="tauri"] body {
+  background: transparent;
+}
+
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+/* In the base layer so utilities like outline-none can override it. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+}

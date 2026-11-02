@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Attachments and calendar events are cached here before they are opened. -->
+    <cache-path name="cache" path="." />
+</paths>

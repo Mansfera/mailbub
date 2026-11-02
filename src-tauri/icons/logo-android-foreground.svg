@@ -1,0 +1,12 @@
+<!-- Android adaptive icon foreground: logo.svg's envelope at 75%. The launcher crops to the
+     middle two thirds, and the charcoal square is the background colour (ic_launcher_background). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <clipPath id="b"><path d="M306 272H718A84 84 0 0 1 802 356V598A84 84 0 0 1 718 682H398Q372 682 352.6 700L269.2 778.4A28 28 0 0 1 222 758V356A84 84 0 0 1 306 272Z"/></clipPath>
+  <g transform="translate(512 512) scale(0.75) translate(-512 -525)">
+    <path fill="#F4EBD9" d="M306 272H718A84 84 0 0 1 802 356V598A84 84 0 0 1 718 682H398Q372 682 352.6 700L269.2 778.4A28 28 0 0 1 222 758V356A84 84 0 0 1 306 272Z"/>
+    <g clip-path="url(#b)">
+      <path fill="#058ED9" d="M162 152H862V238L512.0 487L162 238Z"/>
+      <path fill="none" stroke="#483D3F" stroke-width="38" stroke-linejoin="round" d="M162 238L512.0 487L862 238"/>
+    </g>
+  </g>
+</svg>
