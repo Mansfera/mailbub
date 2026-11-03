@@ -162,7 +162,7 @@ function Header({ chat, account }: { chat: Chat; account: Account }) {
   return (
     <header
       data-tauri-drag-region
-      className="flex h-[52px] shrink-0 items-center gap-3 border-b border-line px-4 max-[700px]:gap-2 max-[700px]:pl-1.5"
+      className="flex h-[60px] shrink-0 items-center gap-3 border-b border-line px-4 max-[700px]:gap-2 max-[700px]:pl-1.5"
     >
       <IconButton
         label={t("setup.back")}
@@ -171,11 +171,11 @@ function Header({ chat, account }: { chat: Chat; account: Account }) {
       >
         <ChevronLeft size={20} />
       </IconButton>
-      <Avatar people={chat.participants} size={30} />
+      <Avatar people={chat.participants} size={36} />
       <div className="min-w-0 flex-1" data-tauri-drag-region>
-        <div className="truncate text-[15px] leading-5 font-semibold">{chatDisplayName(chat)}</div>
+        <div className="truncate text-[16px] leading-5 font-bold">{chatDisplayName(chat)}</div>
         <div
-          className="flex items-center gap-1.5 truncate text-[11px] text-text-2"
+          className="flex items-center gap-1.5 truncate text-[12px] text-text-2"
           title={chat.participants.map((p) => p.address).join(", ")}
         >
           <span className="truncate">{subtitle}</span>
@@ -210,7 +210,10 @@ function Header({ chat, account }: { chat: Chat; account: Account }) {
           </IconButton>
         </>
       )}
-      <div hidden={browsed} className="flex items-center gap-0.5 max-[700px]:hidden">
+      <div
+        hidden={browsed}
+        className="flex items-center gap-0.5 max-[700px]:hidden [&>button]:size-8 [&>button]:rounded-full"
+      >
         <IconButton
           label={t(chat.pinned ? "conversation.unpin" : "conversation.pin")}
           active={chat.pinned}
@@ -252,7 +255,7 @@ function StatusPicker({ chat }: { chat: Chat }) {
       role="radiogroup"
       aria-label={t("sidebar.statusFilter")}
       title={manual ? undefined : t("status.suggested")}
-      className="flex rounded-md bg-surface p-0.5"
+      className="flex gap-1"
     >
       {STATUSES.map((st) => {
         const on = current === st;
@@ -262,20 +265,35 @@ function StatusPicker({ chat }: { chat: Chat }) {
             role="radio"
             aria-checked={on}
             onClick={() => setStatus(chat.id, st)}
-            className={`h-6 rounded px-2 text-[12px] whitespace-nowrap ${
+            className={`h-7 rounded-full border px-3 text-[12px] font-medium whitespace-nowrap ${
               on
-                ? `bg-raised font-medium shadow-sm ${st === "done" ? "text-done" : st === "needs_reply" ? "text-accent-text" : "text-text"} ${
-                    manual
-                      ? ""
-                      : "outline outline-1 -outline-offset-1 outline-dashed outline-text-3"
-                  }`
-                : "text-text-2 hover:text-text"
+                ? // A suggested status is outlined dashed until the user picks one by hand.
+                  `${manual ? "border-transparent bg-text text-bg" : "border-dashed border-text-3 text-text"}`
+                : "border-line text-text-2 hover:bg-hover hover:text-text"
             }`}
           >
             {t(`status.${st}`)}
           </button>
         );
       })}
+    </div>
+  );
+}
+
+/** The person at the top of the chat, as Threads opens a conversation. */
+function ChatIntro({ chat, account }: { chat: Chat; account: Account }) {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-4 flex flex-col items-center pt-4 pb-2 text-center">
+      <Avatar people={chat.participants} size={72} />
+      <div className="mt-3 text-[18px] leading-6 font-bold">{chatDisplayName(chat)}</div>
+      <div className="selectable mt-0.5 max-w-full truncate text-[13px] text-text-2">
+        {chat.participants.map((p) => p.address).join(", ")}
+      </div>
+      <div className="mt-2 flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1 text-[12px] text-text-2">
+        <AccountDot color={account.color} />
+        {t("conversation.via", { account: account.label })}
+      </div>
     </div>
   );
 }
@@ -410,6 +428,7 @@ function MessageList({ chat }: { chat: Chat }) {
       className={`flex-1 overflow-y-auto py-4 ${readOnly ? "px-5 max-[700px]:px-2" : "px-5"}`}
     >
       <div ref={content} className="mx-auto flex max-w-[760px] flex-col">
+        {account && <ChatIntro chat={chat} account={account} />}
         {messages.length > 0 && !olderDone && (
           <div className="mb-2 flex justify-center text-[12px]">
             {olderLoading ? (
@@ -458,14 +477,14 @@ function MessageList({ chat }: { chat: Chat }) {
                 </div>
               )}
               {newDay && (
-                <div className="my-3 text-center text-[11px] font-medium text-text-2">
+                <div className="my-4 text-center text-[12px] font-medium text-text-2">
                   {formatDayHeading(m.sentAt)}
                 </div>
               )}
               {newSubject && (
                 <div className="my-2 flex justify-center">
                   <span
-                    className="max-w-[80%] truncate rounded-full border border-line px-3 py-0.5 text-[11px] text-text-2"
+                    className="max-w-[80%] truncate rounded-full bg-surface px-3 py-1 text-[12px] font-medium text-text-2"
                     title={m.subject}
                   >
                     {normalizeSubject(m.subject) || "—"}
@@ -670,7 +689,7 @@ function Bubble({
             <div
               data-message={m.id}
               onContextMenu={onContextMenu}
-              className={`overflow-hidden rounded-2xl border border-line ${
+              className={`overflow-hidden rounded-[20px] border border-line ${
                 prepared.display === "original" ? "bg-white" : "bg-surface"
               }`}
             >
@@ -703,12 +722,12 @@ function Bubble({
         <div
           data-message={m.id}
           onContextMenu={onContextMenu}
-          className={`selectable rounded-2xl px-3 py-2 text-[14px] leading-[1.4] ${
+          className={`selectable rounded-[20px] px-3.5 py-2.5 text-[15px] leading-[1.4] ${
             wide ? "w-full" : "max-w-[min(560px,78%)]"
           } ${
             out
-              ? "rounded-br-md bg-accent text-on-accent"
-              : `bg-surface text-text ${wide ? "" : "rounded-bl-md"}`
+              ? "rounded-br-[6px] bg-accent text-on-accent"
+              : `bg-surface text-text ${wide ? "" : "rounded-bl-[6px]"}`
           }`}
         >
           {showSender && (
@@ -878,7 +897,7 @@ function Composer({
 
   if (hidden) {
     return (
-      <div className="flex shrink-0 flex-wrap items-center justify-center gap-x-1.5 border-t border-line px-4 py-2 text-[12px] text-text-2">
+      <div className="flex shrink-0 flex-wrap items-center justify-center gap-x-1.5 px-4 py-3 text-[12px] text-text-2">
         <span>{t("composer.noReply")}</span>
         <button
           type="button"
@@ -892,7 +911,7 @@ function Composer({
   }
 
   return (
-    <div className="shrink-0 border-t border-line px-4 pt-2 pb-3">
+    <div className="shrink-0 px-4 pt-1 pb-4">
       <div className="mx-auto max-w-[760px]">
         <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-text-2">
           <AccountDot color={account.color} />
@@ -918,7 +937,7 @@ function Composer({
             t("composer.from", { address: from })
           )}
         </div>
-        <div className="rounded-xl border border-line bg-bg py-2 pr-3 pl-1.5 focus-within:border-brand">
+        <div className="rounded-[22px] bg-surface py-1.5 pr-1.5 pl-1.5 focus-within:ring-2 focus-within:ring-brand">
           {target && (
             <div className="mb-2 flex items-center gap-2 pl-1.5">
               <Reply size={16} className="shrink-0 text-accent-text" aria-hidden />
@@ -951,7 +970,7 @@ function Composer({
             className="mb-2 max-h-24 overflow-y-auto pl-1.5"
           />
           <div className="flex items-end gap-2">
-            <span className="-my-0.5">
+            <span className="pb-0.5">
               <AttachButton onFiles={addFiles} />
             </span>
             <textarea
@@ -971,9 +990,9 @@ function Composer({
                 }
               }}
               placeholder={t("composer.placeholder", { name: chatDisplayName(chat) })}
-              className="selectable max-h-[200px] min-h-6 flex-1 resize-none bg-transparent text-[14px] leading-6 outline-none placeholder:text-text-3"
+              className="selectable max-h-[200px] min-h-6 flex-1 resize-none self-center bg-transparent py-1 text-[15px] leading-6 outline-none placeholder:text-text-3 max-[700px]:text-[16px]"
             />
-            <span className="hidden pb-0.5 sm:inline">
+            <span className="hidden self-center sm:inline">
               <Kbd>⌘↵</Kbd>
             </span>
             <button
@@ -982,9 +1001,9 @@ function Composer({
               onClick={send}
               aria-label={t("composer.send")}
               title={t("composer.sendHint")}
-              className="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent hover:bg-accent-hover disabled:opacity-35"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent hover:bg-accent-hover disabled:opacity-35"
             >
-              <SendHorizontal size={15} />
+              <SendHorizontal size={17} />
             </button>
           </div>
         </div>

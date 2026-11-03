@@ -1,3 +1,4 @@
+import "./dev/mock";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./i18n";
@@ -9,7 +10,12 @@ import { blockStrayDrops } from "./lib/draftFiles";
 
 const isSettings = window.location.hash.startsWith("#settings");
 // Only the main window has the translucent sidebar material behind the page.
-if ("__TAURI_INTERNALS__" in window && !isSettings && !IS_ANDROID)
+if (
+  "__TAURI_INTERNALS__" in window &&
+  !("__MAILBUB_MOCK__" in window) &&
+  !isSettings &&
+  !IS_ANDROID
+)
   document.documentElement.dataset.shell = "tauri";
 if (IS_ANDROID) document.documentElement.dataset.platform = "android";
 blockStrayDrops();

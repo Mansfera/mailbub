@@ -1,89 +1,90 @@
 @import "tailwindcss";
 
 /*
- * Tokens, from the palette https://coolors.co/483d3f-058ed9-f4ebd9-a39a92-77685d
- * (charcoal, sky blue, cream, warm gray, taupe). Choices and why:
+ * Tokens. The redesign follows four messengers picked on Mobbin: X and Quo (blue outgoing
+ * bubbles, pill filter chips), Threads (black-and-white chrome, the person card at the top of
+ * a chat) and Cloaked (a bold list title, a black Compose button, quiet grouped rows).
+ * Choices and why:
  * - Type: the system font (SF Pro on macOS) because the brief asks for a native feel.
- * - Light: cream paper, charcoal ink. The reading pane lifts the cream so bubbles in the
- *   palette cream still stand out from it.
- * - Dark: the same warm hue, not a neutral gray. Charcoal is the bubble, and the panes step
- *   down from it along its own hue; cream is the text.
- * - Blue: --brand is the palette blue, for marks with no text on them (focus, toggles, tints).
- *   White on it is only 3.6:1, so --accent is the same hue deepened to 4.8:1 for anything
- *   carrying text, like outgoing bubbles and buttons.
- * - Palette gray and taupe are text colours where they reach contrast. Gray is 2.6:1 on
- *   cream, so light mode's faintest text is a darker step of it.
- * - Account colours are categorical and sit outside the palette, or two accounts would
- *   look alike; slate is retoned to taupe to stay warm.
+ * - Neutral chrome, no tint: white and near-black ink in light, true black in dark, as all
+ *   four references do, so the only colour on screen is mail itself (bubbles, account dots).
+ * - Blue: --brand is the bright messenger blue for marks with no text (focus, unread dots).
+ *   White on it is too faint for text, so --accent is the same hue deepened to 5:1 for
+ *   outgoing bubbles and buttons.
+ * - Incoming bubbles sit on --surface, the cool gray X uses, one step off the pane.
+ * - The selected row is a gray pill (Cloaked, Threads), not a blue fill, so the blue stays
+ *   reserved for "mine" and "unread".
+ * - Account colours are categorical and sit outside the palette, or two accounts would look
+ *   alike.
  * - Sidebar is tinted over macOS vibrancy inside Tauri (see below); the conversation pane is
  *   opaque for reading.
  */
 :root {
-  --bg: #fbf7ee;
-  --sidebar: #f4ebd9;
-  --sidebar-line: rgb(72 61 63 / 0.09);
-  --surface: #f4ebd9;
-  --avatar: rgb(119 104 93 / 0.18);
-  --raised: #fffdf8;
-  --text: #483d3f;
-  --text-2: #77685d;
-  --text-3: #8a7d72;
-  --line: rgb(72 61 63 / 0.11);
-  --hover: rgb(72 61 63 / 0.055);
-  --selected: #e3eef3;
-  --brand: #058ed9;
-  --accent: #0478b8;
-  --accent-hover: #03689f;
+  --bg: #ffffff;
+  --sidebar: #f7f7f8;
+  --sidebar-line: rgb(15 20 25 / 0.07);
+  --surface: #eff3f4;
+  --avatar: rgb(15 20 25 / 0.07);
+  --raised: #ffffff;
+  --text: #0f1419;
+  --text-2: #536471;
+  --text-3: #66747f;
+  --line: rgb(15 20 25 / 0.09);
+  --hover: rgb(15 20 25 / 0.045);
+  --selected: rgb(15 20 25 / 0.075);
+  --brand: #1d9bf0;
+  --accent: #1570d6;
+  --accent-hover: #115fb8;
   --on-accent: #ffffff;
-  --accent-text: #0467a0;
-  --done: #2b7445;
-  --account-red: #c9402f;
-  --account-teal: #12857a;
-  --account-gold: #b7861b;
-  --account-plum: #a8487f;
-  --account-olive: #6f7d2a;
-  --account-slate: #77685d;
-  --shadow-pop: 0 12px 40px rgb(72 61 63 / 0.22), 0 0 0 1px rgb(72 61 63 / 0.08);
+  --accent-text: #0f63c2;
+  --done: #00875a;
+  --account-red: #e0453a;
+  --account-teal: #0f9488;
+  --account-gold: #c98a0a;
+  --account-plum: #b04ad0;
+  --account-olive: #5f8a1c;
+  --account-slate: #66747f;
+  --shadow-pop: 0 12px 40px rgb(15 20 25 / 0.16), 0 0 0 1px rgb(15 20 25 / 0.06);
   color-scheme: light;
 }
 
 :root[data-theme="dark"] {
-  --bg: #2b2426;
-  --sidebar: #352d2f;
-  --sidebar-line: rgb(244 235 217 / 0.07);
-  --surface: #483d3f;
-  --avatar: rgb(163 154 146 / 0.2);
-  --raised: #3a3133;
-  --text: #f4ebd9;
-  --text-2: #bdb4ab;
-  --text-3: #a39a92;
-  --line: rgb(244 235 217 / 0.1);
-  --hover: rgb(244 235 217 / 0.065);
-  --selected: rgb(5 142 217 / 0.28);
-  --brand: #058ed9;
-  --accent: #0478b8;
-  --accent-hover: #0680c3;
+  --bg: #000000;
+  --sidebar: #0c0d0f;
+  --sidebar-line: rgb(231 233 234 / 0.08);
+  --surface: #23262a;
+  --avatar: rgb(231 233 234 / 0.1);
+  --raised: #16181c;
+  --text: #e7e9ea;
+  --text-2: #a0a8ae;
+  --text-3: #8b949b;
+  --line: rgb(231 233 234 / 0.11);
+  --hover: rgb(231 233 234 / 0.06);
+  --selected: rgb(231 233 234 / 0.1);
+  --brand: #1d9bf0;
+  --accent: #1570d6;
+  --accent-hover: #1a7ee8;
   --on-accent: #ffffff;
-  --accent-text: #5bbdf0;
-  --done: #6cc28c;
-  --account-red: #ef6b5e;
-  --account-teal: #3cb5a8;
-  --account-gold: #d9a73c;
-  --account-plum: #d77bb0;
-  --account-olive: #a6b55a;
-  --account-slate: #8a7d72;
-  --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(244 235 217 / 0.08);
+  --accent-text: #4ea8f5;
+  --done: #3ecf8e;
+  --account-red: #f4685e;
+  --account-teal: #2dc2b3;
+  --account-gold: #e5ad3a;
+  --account-plum: #d184ec;
+  --account-olive: #9cc456;
+  --account-slate: #8b949b;
+  --shadow-pop: 0 12px 40px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(231 233 234 / 0.1);
   color-scheme: dark;
 }
 
-/* Inside the Tauri window the native sidebar material shows through, warmed by the palette
-   so it doesn't read as cool gray next to the conversation pane. */
+/* Inside the Tauri window the native sidebar material shows through, lightly tinted so the
+   list stays legible over busy wallpapers. */
 :root[data-shell="tauri"] {
-  --sidebar: rgb(244 235 217 / 0.72);
+  --sidebar: rgb(247 247 248 / 0.78);
 }
 
 :root[data-shell="tauri"][data-theme="dark"] {
-  --sidebar: rgb(53 45 47 / 0.72);
+  --sidebar: rgb(12 13 15 / 0.78);
 }
 
 @theme inline {

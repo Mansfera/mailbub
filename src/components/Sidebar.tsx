@@ -108,21 +108,35 @@ export function Sidebar() {
       {/* Title-bar strip: room for the traffic lights, draggable. */}
       <div
         data-tauri-drag-region
-        className="flex h-[52px] shrink-0 items-center justify-end gap-1 pr-3 pl-[84px] max-[700px]:pl-3"
+        className="flex h-[52px] shrink-0 items-center justify-end gap-1 pr-3 pl-[84px] max-[700px]:h-11 max-[700px]:pl-3"
       >
-        {hasAccounts && <MailboxPicker accounts={s.accounts} view={shown} />}
         {hasAccounts && <SyncButton accounts={s.accounts} />}
-        <IconButton
-          label={`${t("sidebar.compose")} (⌘N)`}
-          onClick={() => (hasAccounts ? setComposeOpen(true) : setSetup("choose"))}
-        >
-          <SquarePen size={16} />
+        <IconButton label={`${t("settings.title")} (⌘,)`} onClick={() => void openSettingsWindow()}>
+          <Settings size={16} />
         </IconButton>
       </div>
 
+      {/* A bold list title with the one solid button beside it, as in Cloaked. */}
+      <div className="flex items-center gap-2 px-4 pb-3">
+        {hasAccounts ? (
+          <MailboxPicker accounts={s.accounts} view={shown} />
+        ) : (
+          <h1 className="mr-auto text-[22px] font-bold tracking-[-0.01em]">{t("mailbox.inbox")}</h1>
+        )}
+        <button
+          type="button"
+          title={`${t("sidebar.compose")} (⌘N)`}
+          onClick={() => (hasAccounts ? setComposeOpen(true) : setSetup("choose"))}
+          className="flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-text pr-3.5 pl-3 text-[13px] font-semibold text-bg hover:opacity-85 max-[700px]:h-10"
+        >
+          <SquarePen size={15} aria-hidden />
+          {t("sidebar.compose")}
+        </button>
+      </div>
+
       <div className="px-3">
-        <label className="flex h-7 items-center gap-1.5 rounded-md bg-hover px-2 text-text-3 focus-within:ring-2 focus-within:ring-brand">
-          <Search size={14} aria-hidden />
+        <label className="flex h-9 items-center gap-2 rounded-full bg-hover px-3.5 text-text-3 focus-within:bg-bg focus-within:ring-2 focus-within:ring-brand max-[700px]:h-11">
+          <Search size={15} aria-hidden />
           <input
             id="sidebar-search"
             value={s.query}
@@ -134,7 +148,7 @@ export function Sidebar() {
               }
             }}
             placeholder={t("sidebar.search")}
-            className="min-w-0 flex-1 bg-transparent text-[13px] text-text outline-none placeholder:text-text-3"
+            className="min-w-0 flex-1 bg-transparent text-[14px] text-text outline-none placeholder:text-text-3 max-[700px]:text-[16px]"
           />
           <Kbd>⌘K</Kbd>
         </label>
@@ -151,25 +165,29 @@ export function Sidebar() {
         hidden={!hasAccounts || remote}
         role="tablist"
         aria-label={t("sidebar.statusFilter")}
-        className="flex border-b border-sidebar-line px-3 pb-2"
+        className="px-3 pb-2"
       >
-        <div className="flex w-full gap-0.5 overflow-x-auto rounded-lg bg-hover p-0.5 [scrollbar-width:none]">
+        <div className="flex w-full gap-1.5 overflow-x-auto [scrollbar-width:none]">
           {STATUS_FILTERS.map((f) => (
             <button
               key={f}
               role="tab"
               aria-selected={s.statusFilter === f}
               onClick={() => setStatusFilter(f)}
-              className={`flex h-6 shrink-0 grow items-center justify-center gap-1 rounded-md px-2 text-[12px] whitespace-nowrap ${
+              className={`flex h-7 shrink-0 items-center justify-center gap-1 rounded-full border px-2.5 text-[12px] font-medium whitespace-nowrap max-[700px]:h-9 max-[700px]:px-3 max-[700px]:text-[13px] ${
                 s.statusFilter === f
-                  ? "bg-raised font-medium text-text shadow-sm"
-                  : "text-text-2 hover:text-text"
+                  ? "border-transparent bg-text text-bg"
+                  : "border-line text-text hover:bg-hover"
               }`}
             >
               {t(`status.${f}`)}
               {/* Counts only where they mean work: who owes whom a reply. */}
               {(f === "needs_reply" || f === "waiting") && counts[f] > 0 && (
-                <span className="text-[11px] tabular-nums text-text-3">{counts[f]}</span>
+                <span
+                  className={`text-[12px] tabular-nums ${s.statusFilter === f ? "opacity-70" : "text-text-3"}`}
+                >
+                  {counts[f]}
+                </span>
               )}
             </button>
           ))}
@@ -177,7 +195,7 @@ export function Sidebar() {
       </div>
 
       <ul
-        className="flex-1 overflow-y-auto px-2 py-1"
+        className="flex-1 overflow-y-auto px-2 pt-1 pb-3"
         role="listbox"
         aria-label={viewLabel(shown, t)}
       >
@@ -199,12 +217,6 @@ export function Sidebar() {
         {hasAccounts &&
           (remote ? <BrowseMoreRow /> : <OlderMailRow searching={Boolean(s.query.trim())} />)}
       </ul>
-
-      <div className="flex h-10 shrink-0 items-center border-t border-sidebar-line px-2">
-        <IconButton label={`${t("settings.title")} (⌘,)`} onClick={() => void openSettingsWindow()}>
-          <Settings size={16} />
-        </IconButton>
-      </div>
     </aside>
   );
 }
@@ -222,14 +234,14 @@ function AccountFilter({
 }) {
   const { t } = useTranslation();
   const chip = (active: boolean) =>
-    `flex h-6 items-center gap-1.5 rounded-full border px-2 text-[12px] whitespace-nowrap ${
-      active ? "border-transparent bg-selected text-text" : "border-line text-text-2 hover:bg-hover"
+    `flex h-7 items-center gap-1.5 rounded-full px-2.5 text-[12px] whitespace-nowrap max-[700px]:h-9 ${
+      active ? "bg-selected font-medium text-text" : "text-text-2 hover:bg-hover hover:text-text"
     }`;
   return (
     <div
       role="radiogroup"
       aria-label={t("sidebar.accountFilter")}
-      className="flex flex-wrap gap-1 px-3 pt-2.5 pb-2"
+      className="flex gap-0.5 overflow-x-auto px-2 pt-2 pb-1.5 [scrollbar-width:none]"
     >
       {accounts.length > 0 && (
         <button
@@ -259,7 +271,7 @@ function AccountFilter({
         aria-label={t("sidebar.addAccount")}
         title={t("sidebar.addAccount")}
         onClick={onAdd}
-        className={`${chip(false)} ${accounts.length ? "px-1.5" : ""}`}
+        className={`${chip(false)} shrink-0 ${accounts.length ? "px-2" : ""}`}
       >
         <Plus size={13} aria-hidden />
         {accounts.length === 0 && t("sidebar.addAccount")}
@@ -318,7 +330,7 @@ function ChatRow({
           .then((items) => popupMenu([{ text: t("message.moveTo"), items }]))
           .catch((err: Error) => useMail.getState().notify(err.message));
       }}
-      className="relative overflow-hidden rounded-lg"
+      className="relative overflow-hidden rounded-xl"
     >
       {offset !== 0 && (
         <div
@@ -345,14 +357,14 @@ function ChatRow({
           transform: offset ? `translateX(${offset}px)` : undefined,
           transition: dragging ? "none" : "transform 180ms ease-out",
         }}
-        className={`relative flex gap-2.5 rounded-lg px-2.5 py-2 ${
+        className={`relative flex gap-3 rounded-xl px-2.5 py-2.5 ${
           offset !== 0 ? "bg-raised shadow-sm" : selected ? "bg-selected" : "hover:bg-hover"
         }`}
       >
-        <Avatar people={chat.participants} size={40} accountColor={account?.color} />
+        <Avatar people={chat.participants} size={44} accountColor={account?.color} />
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-1.5">
-            <span className={`truncate text-[13px] ${unread ? "font-semibold" : "font-medium"}`}>
+            <span className={`truncate text-[14px] ${unread ? "font-bold" : "font-semibold"}`}>
               {chatDisplayName(chat)}
             </span>
             {chat.pinned && (
@@ -361,16 +373,18 @@ function ChatRow({
             {chat.muted && (
               <BellOff size={11} className="shrink-0 text-text-3" aria-label={t("chat.muted")} />
             )}
-            <span className="ml-auto shrink-0 text-[11px] tabular-nums text-text-2">
+            <span
+              className={`ml-auto shrink-0 text-[12px] tabular-nums ${unread && !chat.muted ? "font-semibold text-accent-text" : "text-text-2"}`}
+            >
               {last && formatListDate(last.sentAt)}
             </span>
           </div>
-          <div className="truncate text-[12px] text-text">
+          <div className={`truncate text-[13px] ${unread ? "font-medium text-text" : "text-text"}`}>
             {last && normalizeSubject(last.subject)}
           </div>
           <div className="flex items-center gap-1.5">
             <span
-              className={`line-clamp-1 flex-1 text-[12px] ${unread ? "text-text" : "text-text-2"}`}
+              className={`line-clamp-1 flex-1 text-[13px] ${unread ? "text-text" : "text-text-2"}`}
             >
               {snippet ? (
                 <Snippet text={snippet} />
@@ -384,7 +398,7 @@ function ChatRow({
             {unread > 0 ? (
               <span
                 aria-label={t("chat.unread", { count: unread })}
-                className={`min-w-[18px] rounded-full px-1.5 text-center text-[11px] leading-[18px] font-semibold tabular-nums ${
+                className={`min-w-[20px] rounded-full px-1.5 text-center text-[11px] leading-[20px] font-bold tabular-nums ${
                   chat.muted ? "bg-text-3 text-bg" : "bg-accent text-on-accent"
                 }`}
               >
@@ -564,11 +578,13 @@ function MailboxPicker({ accounts, view }: { accounts: Account[]; view: View }) 
       aria-label={t("mailbox.choose")}
       title={t("mailbox.choose")}
       onClick={() => void open().catch((e: Error) => useMail.getState().notify(e.message))}
-      className="mr-auto flex h-7 min-w-0 items-center gap-1 rounded-md px-2 text-[13px] font-medium text-text hover:bg-hover"
+      className="-ml-1.5 mr-auto flex h-9 min-w-0 items-center gap-1 rounded-lg px-1.5 text-text hover:bg-hover"
     >
-      <ViewIcon size={14} aria-hidden className="shrink-0 text-text-2" />
-      <span className="truncate">{viewLabel(view, t)}</span>
-      <ChevronDown size={13} aria-hidden className="shrink-0 text-text-2" />
+      {view.kind !== "inbox" && <ViewIcon size={18} aria-hidden className="shrink-0 text-text-2" />}
+      <span className="truncate text-[22px] font-bold tracking-[-0.01em]">
+        {viewLabel(view, t)}
+      </span>
+      <ChevronDown size={16} aria-hidden className="shrink-0 text-text-2" />
     </button>
   );
 }
